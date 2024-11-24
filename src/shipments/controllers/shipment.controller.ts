@@ -25,8 +25,9 @@ export class ShipmentController {
   async getAllByUser(
     @Param('userId', new ParseUUIDPipe(), UserExistPipe) userId: string,
     @Query()
-    type?: GetShipmentDto,
+    query?: GetShipmentDto,
   ) {
+    const { type } = query;
     return await this.shipmentService.getAllByUser(userId, type);
   }
 

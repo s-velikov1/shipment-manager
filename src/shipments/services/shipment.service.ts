@@ -1,24 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Shipment } from '../entities/shipment.entity';
 import { CreateShipmentDto } from '../dto/create-shipment.dto';
 import { UpdateShipmentDto } from '../dto/update-shipment.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { GetShipmentDto } from '../dto/get-shipment.dto';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { ShipmentType } from 'src/common/enums/shipment-type.enum';
 
 @Injectable()
 export class ShipmentService {
   constructor(
-    @InjectRepository(Shipment)
-    private readonly shipmentRepository: Repository<Shipment>,
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager,
   ) {}
 
-  async getAllByUser(userId: string, type?: GetShipmentDto) {
-    const queryBuilder = this.shipmentRepository
-      .createQueryBuilder('shipment')
+  async getAllByUser(userId: string, type?: ShipmentType) {
+    const queryBuilder = this.entityManager
+      .createQueryBuilder(Shipment, 'shipment')
       .where('shipment.created_by_id = :userId', { userId });
 
-    console.log(type);
     if (type) {
       queryBuilder.andWhere('shipment.type = :type', { type });
     }
@@ -30,9 +29,11 @@ export class ShipmentService {
     userId: string,
     shipmentId: string,
   ): Promise<Shipment> {
-    const shipment = await this.shipmentRepository.findOne({
-      where: { id: shipmentId, created_by_id: { id: userId } },
-    });
+    const shipment = this.entityManager
+      .createQueryBuilder(Shipment, 'shipment')
+      .where('shipment.id = :shipmentId', { shipmentId })
+      .andWhere('shipment.created_by_id = :userId', { userId })
+      .getOne();
 
     if (!shipment) {
       throw new NotFoundException(
@@ -44,12 +45,12 @@ export class ShipmentService {
   }
 
   async create(userId: string, createShipmentDto: CreateShipmentDto) {
-    const shipment = this.shipmentRepository.create({
+    const shipment = this.entityManager.create(Shipment, {
       ...createShipmentDto,
-      created_by_id: { id: userId },
+      created_by: { id: userId },
     });
 
-    return await this.shipmentRepository.save(shipment);
+    return await this.entityManager.save(shipment);
   }
 
   async update(
@@ -61,11 +62,17 @@ export class ShipmentService {
 
     Object.assign(shipment, updateShipmentDto);
 
-    return await this.shipmentRepository.save(shipment);
+    return await this.entityManager.save(shipment);
   }
 
   async softDelete(shipmentId: string) {
-    await this.shipmentRepository.softDelete(shipmentId);
+    const result = await this.entityManager.softDelete(Shipment, shipmentId);
+
+    if (result.affected === 0) {
+      throw new NotFoundException(
+        `Shipment with ID ${shipmentId} could not be deleted (not found).`,
+      );
+    }
 
     return {
       success: true,

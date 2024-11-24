@@ -18,7 +18,7 @@ export class Shipment {
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'created_by_id' })
-  created_by_id: User;
+  created_by: User;
 
   @Column()
   description: string;
