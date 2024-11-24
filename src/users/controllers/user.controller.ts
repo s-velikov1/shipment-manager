@@ -17,10 +17,10 @@ import { UserExistPipe } from 'src/common/pipes/user-exist.pipe';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  @Get()
-  async getAll() {
-    return await this.userService.getAll();
-  }
+  // @Get()
+  // async getAll() {
+  //   return await this.userService.getAll();
+  // }
 
   @Get(':userId')
   async getOne() {
