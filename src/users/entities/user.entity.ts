@@ -1,9 +1,11 @@
 import { UserType } from 'src/common/enums/user-type.enum';
 import {
   Column,
+  CreateDateColumn,
   DeleteDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'users' })
@@ -20,12 +22,12 @@ export class User {
   @Column({ type: 'enum', enum: UserType, default: UserType.GENERAL })
   type: UserType;
 
-  @Column()
+  @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 
-  @Column()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updated_at: Date;
 
-  @DeleteDateColumn({ nullable: true })
+  @DeleteDateColumn({ type: 'timestamptz', nullable: true })
   deleted_at: Date;
 }
