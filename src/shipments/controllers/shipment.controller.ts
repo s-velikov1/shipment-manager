@@ -43,8 +43,7 @@ export class ShipmentController {
   @UseGuards(ShipmentOwnershipGuard)
   async update(
     @Param('userId', new ParseUUIDPipe(), UserExistPipe) userId: string,
-    @Param('shipmentId', new ParseUUIDPipe())
-    shipmentId: string,
+    @Param('shipmentId', new ParseUUIDPipe()) shipmentId: string,
     @Body() updateShipmentDto: UpdateShipmentDto,
   ) {
     return await this.shipmentService.update(

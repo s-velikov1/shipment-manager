@@ -13,7 +13,7 @@ export class ShipmentOwnershipGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const { userId, shipmentId } = request;
+    const { userId, shipmentId } = request.params;
 
     const shipment = await this.shipmentService.getOneByIdAndUser(
       userId,
