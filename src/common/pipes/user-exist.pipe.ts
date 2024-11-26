@@ -8,7 +8,7 @@ export class UserExistPipe implements PipeTransform {
   async transform(value: any) {
     const user = await this.userService.getOneById(value);
     if (!user) {
-      throw new NotFoundException(`User with ID ${value} does not exist`);
+      throw new NotFoundException();
     }
 
     return value;
