@@ -44,13 +44,19 @@ DB_PASSWORD=testpassword
 DB_NAME=testdb
 ```
 
-4. Start PostreSQL db in docker
+4. Install dependencies
+
+```
+npm install
+```
+
+5. Start PostreSQL db in docker
 
 ```
 docker compose -f docker-compose-postgres-only.yml up --build
 ```
 
-5. Run the application in dev mode
+6. Run the application in dev mode
 
 ```
 npm run start:dev
@@ -83,7 +89,7 @@ vim .env
 Example:
 
 ```
-DB_HOST=localhost
+DB_HOST=postgres
 DB_PORT=5432
 DB_USERNAME=testuser
 DB_PASSWORD=testpassword
