@@ -12,12 +12,13 @@ import { ShipmentItemService } from '../services/shipment-item.service';
 import { CreateShipmentItemDto } from '../dto/create-shipment-item.dto';
 import { UpdateShipmentItemDto } from '../dto/update-shipment-item.dto';
 
-@Controller('shipment-item/:shipmentId/items')
+@Controller('shipments/:shipmentId/items')
 export class ShipmentItemController {
   constructor(private readonly shipmentItemService: ShipmentItemService) {}
 
   @Get()
   async getAll(@Param('shipmentId', new ParseUUIDPipe()) shipmentId: string) {
+    console.log(shipmentId);
     return await this.shipmentItemService.getAllByShipment(shipmentId);
   }
 
@@ -32,7 +33,7 @@ export class ShipmentItemController {
     );
   }
 
-  @Post(':itemId')
+  @Post()
   async create(
     @Param('shipmentId', new ParseUUIDPipe()) shipmentId: string,
     @Body() createShipmentItemDto: CreateShipmentItemDto,

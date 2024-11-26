@@ -15,7 +15,7 @@ export class ShipmentItem {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Shipment)
+  @ManyToOne(() => Shipment, { nullable: false })
   @JoinColumn({ name: 'shipment_id' })
   shipment: Shipment;
 

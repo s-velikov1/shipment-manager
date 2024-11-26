@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { User } from '../entities/user.entity';
@@ -11,19 +11,11 @@ export class UserService {
     @InjectEntityManager() private readonly entityManager: EntityManager,
   ) {}
 
-  // async getAll(): Promise<User[]> {
-  //   return await this.entityManager.createQueryBuilder(User, 'user').getMany();
-  // }
-
   async getOneById(userId: string) {
     const user = await this.entityManager
       .createQueryBuilder(User, 'user')
       .where('user.id = :userId', { userId })
       .getOne();
-
-    if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found.`);
-    }
 
     return user;
   }
@@ -42,11 +34,7 @@ export class UserService {
   }
 
   async softDelete(id: string) {
-    const result = await this.entityManager.softDelete(User, id);
-
-    if (result.affected === 0) {
-      throw new NotFoundException(`User with ID ${id} could not be deleted.`);
-    }
+    await this.entityManager.softDelete(User, id);
 
     return {
       success: true,
